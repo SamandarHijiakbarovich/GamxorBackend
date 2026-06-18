@@ -1,0 +1,27 @@
+# Render.com Blueprint — bitta klik bilan web servis + PostgreSQL yaratadi.
+# render.com → New + → Blueprint → shu repo'ni ulang → Apply.
+databases:
+  - name: gamxor-db
+    databaseName: gamxor
+    plan: free
+
+services:
+  - type: web
+    name: gamxor-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      # Postgres ulanish satri avtomatik in'ektsiya qilinadi (postgres://...).
+      - key: DATABASE_URL
+        fromDatabase:
+          name: gamxor-db
+          property: connectionString
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: EnableSwagger
+        value: "true"
+      - key: Otp__FixedCode
+        value: "2580"
