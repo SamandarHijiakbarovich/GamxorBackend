@@ -27,6 +27,16 @@ Domain va Application qatlamlari hech qanday infratuzilma (DB, web) detallarini 
 - Entity Framework Core 9 + **PostgreSQL** (Npgsql)
 - Docker (server tanlamaydigan, istalgan joyga deploy bo'ladi)
 
+## Production xususiyatlari
+
+- **Serilog** — strukturali logging + so'rov loglari
+- **Global xato-handler** — kutilmagan xatolar uchun toza `ProblemDetails` JSON
+- **Health-check'lar** — `/health` (liveness), `/health/ready` (baza ulanishini tekshiradi)
+- **Rate limiting** — OTP so'roviga (`auth/request-code`) IP bo'yicha 5 so'rov/daqiqa
+- **Validatsiya** — FluentValidation; xato bo'lsa mijoz kutadigan `{ success:false, message }` qaytaradi (HTTP 400 emas)
+- **Xavfsizlik** — `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy` header'lari; sozlanadigan CORS (`Cors:AllowedOrigins`)
+- **Reverse-proxy IP** — `X-Forwarded-For` orqali haqiqiy mijoz IP si (Render va h.k.)
+
 ## API kontrakti
 
 Barcha endpointlar `/api/` ostida, `POST` (mijoz trailing slash bilan yuboradi —

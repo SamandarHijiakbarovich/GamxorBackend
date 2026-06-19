@@ -147,4 +147,21 @@ public class FamilyCareApiTests(FamilyCareApiFactory factory) : IClassFixture<Fa
         var res = await _client.GetAsync("/health");
         Assert.Equal(HttpStatusCode.OK, res.StatusCode);
     }
+
+    [Fact]
+    public async Task Health_ready_checks_database()
+    {
+        var res = await _client.GetAsync("/health/ready");
+        Assert.Equal(HttpStatusCode.OK, res.StatusCode);
+    }
+
+    [Fact]
+    public async Task Request_code_with_incomplete_phone_fails_with_contract_shape()
+    {
+        var device = NewDevice();
+        // Validatsiya xatosi HTTP 400 emas, { success:false, message } qaytishi kerak.
+        var res = await PostAsync("api/auth/request-code/", new { deviceId = device, phone = "+998 90" });
+        Assert.False(res.GetProperty("success").GetBoolean());
+        Assert.False(string.IsNullOrWhiteSpace(res.GetProperty("message").GetString()));
+    }
 }

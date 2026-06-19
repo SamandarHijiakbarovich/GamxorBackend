@@ -1,6 +1,7 @@
 using GamxorOila.Application.Contracts;
 using GamxorOila.Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GamxorOila.Api.Controllers;
 
@@ -9,6 +10,7 @@ namespace GamxorOila.Api.Controllers;
 public class AuthController(IFamilyCareService service) : ControllerBase
 {
     [HttpPost("request-code")]
+    [EnableRateLimiting("otp")]
     public async Task<ActionResult<ApiResponseDto>> RequestCode(
         [FromBody] RequestCodeRequest request, CancellationToken ct) =>
         Ok(await service.RequestCodeAsync(request, ct));
